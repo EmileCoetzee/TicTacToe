@@ -1,0 +1,60 @@
+﻿@model TicTacToe.Models.Player
+
+@{
+    ViewBag.Title = "Start";
+}
+
+<h2>Start</h2>
+
+<div id="jsPlayerFormContainer">
+    @{ Html.RenderAction("GetPlayer1Form", "Home"); }
+</div>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+
+        $("#player1Form").validate({
+
+            submitHandler: function () {
+
+                $.ajax({
+                    url: "/Home/AddPlayer",
+                    method: "POST",
+                    dataType: "json",
+                    data: $("#player1Form").serialize(),
+                    success: function (data) {
+
+                        if (data.resultCode == 1) {
+
+                            $.get("/Home/GetPlayer2Form", function (data) {
+
+                                $('#jsPlayerFormContainer').html(data);
+                            });
+                        }
+                        else {
+
+                            console.log("AHH");
+                        }
+                    },
+                    failure: function () {
+                        console.log("fail");
+                    }
+
+                });
+
+                return false;
+            }
+        });
+
+    </script>
+    }
+    
