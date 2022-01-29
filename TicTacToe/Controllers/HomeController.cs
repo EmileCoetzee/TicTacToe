@@ -46,7 +46,7 @@ namespace TicTacToe.Controllers
         {
             Player player = new Player();
 
-            player.isPlayer1 = true;
+            player.isPlayer1 = false;
 
             return PartialView(player);
         }
@@ -57,18 +57,26 @@ namespace TicTacToe.Controllers
         public JsonResult AddPlayer(Player model)
         {
 
+            string redirectURL = "";
+
             try
             {
                 if (!ModelState.IsValid)
                     throw new Exception("Error, some data is missing.  Please ensure that all fields are entered.");
 
+                
 
                 model.Name = _htmlSanitizer.Sanitize(model.Name);
 
                 //check if player exists
+                int playerId = _query.CheckIfPlayerExists(model.Name);
 
+                if (!model.isPlayer1)
+                    redirectURL = "/Home/Play";
+                
+                    
 
-                return Json(new { data = ".", resultCode = 1 }, JsonRequestBehavior.AllowGet);
+                return Json(new { data = redirectURL, resultCode = 1 }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {

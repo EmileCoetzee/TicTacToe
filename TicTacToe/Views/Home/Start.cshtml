@@ -38,11 +38,19 @@
                             $.get("/Home/GetPlayer2Form", function (data) {
 
                                 $('#jsPlayerFormContainer').html(data);
+
+                                initValidator("player2Form");
+
                             });
+
+                        }
+                        else if (data.resultCode == 2) {
+
+                            document.location.href = data.redirectURL;
                         }
                         else {
 
-                            console.log("AHH");
+                            toastr.error(data.data);
                         }
                     },
                     failure: function () {
@@ -54,6 +62,41 @@
                 return false;
             }
         });
+
+
+        function initValidator(form) {
+
+            $("#" + form).validate({
+
+                submitHandler: function () {
+
+                    $.ajax({
+                        url: "/Home/AddPlayer",
+                        method: "POST",
+                        dataType: "json",
+                        data: $("#" + form).serialize(),
+                        success: function (data) {
+
+                            if (data.resultCode == 1) {
+
+                                document.location.href = data.data;
+
+                            }
+                            else {
+
+                                toastr.error(data.data);
+                            }
+                        },
+                        failure: function () {
+                            console.log("fail");
+                        }
+
+                    });
+
+                    return false;
+                }
+            });
+        }
 
     </script>
     }
