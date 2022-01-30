@@ -9,7 +9,7 @@ namespace TicTacToe.Models
     {
         public int Id { get; set; }
 
-        public int GameId { get; set; }
+        public int GamesId { get; set; }
 
         public int B1 { get; set; } = 0;
 

@@ -4,7 +4,7 @@
 
 <h2>Play</h2>
 
-@ViewBag.GameId
+<input type="hidden" id="gameId" name="gameId" value="@ViewBag.GameId" />
 
 <div class="container play-container py-5">
 
@@ -38,17 +38,23 @@
 
             var square = $(this);
 
+            if (square.find('div').html().length > 0) {
+                toastr.error("Cannot overwrite move, try a different move.");
+                return;
+            }
+
             square.find('div').html(symbol);
 
             var currentRound = $('#currentRound').val();
             var gameId = $('#gameId').val();
+            var blockId = square.attr('data-id'); //squares are numbered in left-to-right fashion
 
             toastr.info("CurrentRound = " + currentRound);
             toastr.info("Currentplayer = " + currentPlayer);
 
 
             //save move
-            $.post("/Home/SaveMove/" + gameId + "/" + symbol, function (data) {
+            $.post("/Home/SaveMove/" + gameId + "/" + currentRound + "/" + currentPlayer + "/" + blockId, function (data) {
 
                 if (data.resultCode == 1) {
 

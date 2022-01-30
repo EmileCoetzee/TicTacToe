@@ -8,6 +8,7 @@ using TicTacToe.Models;
 
 namespace TicTacToe.Controllers
 {
+    [System.Runtime.InteropServices.Guid("CE5AC464-DD4C-45BE-80E2-CD24A9D0166A")]
     public class HomeController : Controller
     {
         Query _query;
@@ -112,11 +113,89 @@ namespace TicTacToe.Controllers
         }
 
 
-        public ActionResult Contact()
+        // POST: Home/AddPlayer
+        [HttpPost]
+        [Route("Home/SaveMove/{gameId}/{currentRound}/{currentPlayer}/{blockId}")]
+        public JsonResult SaveMove(int gameId, int currentRound, int currentPlayer, int blockId)
         {
-            ViewBag.Message = "Your contact page.";
+            try
+            {
 
-            return View();
+                //add move (moves table)
+
+                Move move = _query.UpdateMoves(gameId, currentPlayer, blockId);
+
+                if (move is null)
+                    throw new Exception("Error, could not save move, please try again.");
+
+                int[] winningSequence1 = { 0, 4, 8 };
+
+                //int[] winningSequence1 = { 1, 0, 0, 0, 1, 0, 0, 0, 1 };
+
+
+                int[] moves = { move.B1, move.B2, move.B3, move.B4, move.B5, move.B6, move.B7, move.B8, move.B9 };
+
+                //bool isEqual = winningSequence1.SequenceEqual(moves);
+
+
+                //List<>.IndexOf(moves, 1);
+
+                List<int> checkingSequence = new List<int>();
+
+                int[] players = { 1, 2 };
+
+
+
+                foreach (var p in players)
+                {
+                    for (int i = 0; i < moves.Length; i++)
+                    {
+                        if (moves[i] == p)
+                        {
+                            checkingSequence.Add(i);
+                        }
+                    }
+
+                    bool isEqual = winningSequence1.SequenceEqual(checkingSequence);
+
+                    if (isEqual)
+                        break;
+                }
+
+
+                    //    List<int> playerMoves = new List<int>();
+
+                    //    foreach (var m in moves)
+                    //    {
+                    //        //if (m == p)
+                    //        //{
+                    //            playerMoves.Add(m);
+                    //        //}
+
+                    //        bool isEqual = winningSequence1.SequenceEqual(playerMoves);
+                    //    }
+                    //    //count occurrances
+                    //    //if (moveFields.Count(x => x == p) > 2)
+                    //   // {
+                    //        //bool isEqual = winningSequence1.SequenceEqual();
+                    //    //}
+
+                    //}
+
+
+
+                    //if winner then clear moves table
+
+                    //then add points and set highest round reached (game table)
+
+
+                    return Json(new { data = "", resultCode = 1, player1Id = "" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { data = ex.Message.ToString(), resultCode = 0 }, JsonRequestBehavior.AllowGet);
+            }
         }
+
     }
 }

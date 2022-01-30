@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using TicTacToe.Models;
 
 namespace TicTacToe.DataAccess
 {
@@ -71,9 +72,19 @@ namespace TicTacToe.DataAccess
                 OUTPUT INSERTED.Id 
                 VALUES (@Player1Id, @Player2Id)";
 
+                string sqlMoves = @"INSERT 
+                INTO Moves (GamesId) 
+                VALUES (@GameId)";
+
+
                 using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
                 {
-                    return cnn.QuerySingle<int>(sql, new { Player1Id = player1Id, Player2Id = player2Id });
+                    int gameId = cnn.QuerySingle<int>(sql, new { Player1Id = player1Id, Player2Id = player2Id });
+
+                    if (gameId != 0)
+                        cnn.Execute(sqlMoves, new { GameId = gameId });
+
+                    return gameId;
                 }
             }
             catch (Exception)
@@ -82,5 +93,37 @@ namespace TicTacToe.DataAccess
             }
         }
 
+        // update Moves
+        // params = 0. gameId 1. player number (1 or 2)
+        // return Move object
+        public Move UpdateMoves(int gameId, int currentPlayer, int blockId)
+        {
+            try
+            {
+                var sql = "UPDATE Moves SET " +
+               "B" + blockId + " = @CurrentPlayer " +
+                   "WHERE GamesId = @GameId;";
+
+
+                var sqlSelect = "SELECT * FROM Moves WHERE GamesId = @GameId";
+
+
+                using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
+                {
+                    cnn.Execute(sql, new {
+                        CurrentPlayer = currentPlayer,
+                        GameId = gameId
+                    });
+
+                    return cnn.QuerySingleOrDefault<Move>(sqlSelect, new { GameId = gameId });
+
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+        }
     }
 }
