@@ -35,9 +35,13 @@
 
                         if (data.resultCode == 1) {
 
+                            var player1Id = data.player1Id;
+
                             $.get("/Home/GetPlayer2Form", function (data) {
 
                                 $('#jsPlayerFormContainer').html(data);
+
+                                $('#player2Form').append("<input type='hidden' id='player1Id' name='player1Id' value='" + player1Id + "'>");
 
                                 initValidator("player2Form");
 

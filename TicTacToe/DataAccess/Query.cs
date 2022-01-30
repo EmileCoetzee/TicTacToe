@@ -20,33 +20,67 @@ namespace TicTacToe.DataAccess
 			}
 		}
 
-		// save an object and return inserted Id
-		// params = 0. sql statement 1. object
+		// check if player exists
+        // if not, create new
+		// params = 0. player name
+        // return playerId
 		public int CheckIfPlayerExists(String playerName)
 		{
             int playerId = 0;
 
-            string sql = @"SELECT *
+            try
+            {
+
+                string sql = @"SELECT *
 				FROM
 				Players 
 				WHERE
 				Name = @Name";
 
-            string sqlInsert = @"INSERT 
+                string sqlInsert = @"INSERT 
                 INTO Players (Name) 
                 OUTPUT INSERTED.Id 
                 VALUES (@Name)";
 
-			using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
-			{
-				playerId =  cnn.QuerySingleOrDefault<int>(sql, new { Name = playerName });
+                using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
+                {
+                    playerId = cnn.QuerySingleOrDefault<int>(sql, new { Name = playerName });
 
-                if (playerId != 0)
-                    return playerId;
+                    if (playerId != 0)
+                        return playerId;
 
-                return cnn.QuerySingle<int>(sqlInsert, new { Name = playerName });
+                    return cnn.QuerySingle<int>(sqlInsert, new { Name = playerName });
+                }
+            }
+            catch (Exception)
+            {
+                return playerId;
             }
 		}
 
-	}
+
+        // create new game object
+        // params = 0. player1Id, 1. player2Id
+        // return GameId
+        public int CreateGame(int player1Id, int player2Id)
+        {
+            try
+            {
+                string sql = @"INSERT 
+                INTO Games (Player1Id, Player2Id) 
+                OUTPUT INSERTED.Id 
+                VALUES (@Player1Id, @Player2Id)";
+
+                using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
+                {
+                    return cnn.QuerySingle<int>(sql, new { Player1Id = player1Id, Player2Id = player2Id });
+                }
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
+
+    }
 }

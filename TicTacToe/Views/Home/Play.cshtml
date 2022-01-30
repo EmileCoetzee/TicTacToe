@@ -4,6 +4,8 @@
 
 <h2>Play</h2>
 
+@ViewBag.GameId
+
 <div class="container play-container py-5">
 
     @{ Html.RenderAction("GetBoard", "Home", new { id = 1 }); }
@@ -16,7 +18,7 @@
 
     <script>
 
-        
+
 
         //$(document).ready(function () {}
         //{
@@ -39,10 +41,25 @@
             square.find('div').html(symbol);
 
             var currentRound = $('#currentRound').val();
-
+            var gameId = $('#gameId').val();
 
             toastr.info("CurrentRound = " + currentRound);
             toastr.info("Currentplayer = " + currentPlayer);
+
+
+            //save move
+            $.post("/Home/SaveMove/" + gameId + "/" + symbol, function (data) {
+
+                if (data.resultCode == 1) {
+
+                    toastr.success(data.data);
+                }
+                else {
+
+                    toastr.error(data.data);
+                }
+
+            });
 
 
             if (currentPlayer == 1) {
@@ -54,8 +71,8 @@
                 symbol = "X";
             }
 
-            
-            
+
+
 
         });
 

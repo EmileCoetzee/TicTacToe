@@ -38,7 +38,10 @@ namespace TicTacToe.Controllers
 
             player.isPlayer1 = true;
 
-            return PartialView(player);
+            PlayerStartViewModel vm = new PlayerStartViewModel();
+            vm.Player = player;
+
+            return PartialView(vm);
         }
 
         // GET: Home/GetPlayer2Form (Partial)
@@ -48,13 +51,16 @@ namespace TicTacToe.Controllers
 
             player.isPlayer1 = false;
 
-            return PartialView(player);
+            PlayerStartViewModel vm = new PlayerStartViewModel();
+            vm.Player = player;
+
+            return PartialView(vm);
         }
 
         // POST: Home/AddPlayer
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult AddPlayer(Player model)
+        public JsonResult AddPlayer(PlayerStartViewModel model)
         {
 
             string redirectURL = "";
@@ -66,17 +72,16 @@ namespace TicTacToe.Controllers
 
                 
 
-                model.Name = _htmlSanitizer.Sanitize(model.Name);
+                model.Player.Name = _htmlSanitizer.Sanitize(model.Player.Name);
 
                 //check if player exists
-                int playerId = _query.CheckIfPlayerExists(model.Name);
+                int playerId = _query.CheckIfPlayerExists(model.Player.Name);
 
-                if (!model.isPlayer1)
-                    redirectURL = "/Home/Play";
-                
+                if (!model.Player.isPlayer1)
+                    redirectURL = "/Home/Play/" + model.Player1Id + "/" + playerId;
                     
 
-                return Json(new { data = redirectURL, resultCode = 1 }, JsonRequestBehavior.AllowGet);
+                return Json(new { data = redirectURL, resultCode = 1, player1Id = playerId }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -84,9 +89,16 @@ namespace TicTacToe.Controllers
             }
         }
 
-        // GET: Home/Play 
-        public ActionResult Play()
+        // GET: Home/Play/1/1
+        [Route("Home/Play/{player1Id}/{player2Id}")]
+        public ActionResult Play(int player1Id, int player2Id)
         {
+            //create new game
+            int gameId = _query.CreateGame(player1Id, player2Id);
+
+            ViewBag.GameId = gameId;
+
+
             return View();
         }
 
