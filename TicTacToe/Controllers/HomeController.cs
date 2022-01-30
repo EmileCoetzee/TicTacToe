@@ -84,6 +84,21 @@ namespace TicTacToe.Controllers
             }
         }
 
+        // GET: Home/Play 
+        public ActionResult Play()
+        {
+            return View();
+        }
+
+        // GET: Home/GetBoard (Partial)
+        public PartialViewResult GetBoard(int id)
+        {
+            ViewBag.CurrentRound = id;
+
+            return PartialView();
+
+        }
+
 
         public ActionResult Contact()
         {

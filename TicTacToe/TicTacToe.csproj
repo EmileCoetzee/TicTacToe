@@ -240,6 +240,8 @@
     <Content Include="Views\Home\Start.cshtml" />
     <Content Include="Views\Home\GetPlayer1Form.cshtml" />
     <Content Include="Views\Home\GetPlayer2Form.cshtml" />
+    <Content Include="Views\Home\Play.cshtml" />
+    <Content Include="Views\Home\GetBoard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

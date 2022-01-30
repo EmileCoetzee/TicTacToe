@@ -1,0 +1,63 @@
+﻿@{
+    ViewBag.Title = "Play";
+}
+
+<h2>Play</h2>
+
+<div class="container play-container py-5">
+
+    @{ Html.RenderAction("GetBoard", "Home", new { id = 1 }); }
+
+</div>
+
+
+@section scripts
+{
+
+    <script>
+
+        
+
+        //$(document).ready(function () {}
+        //{
+        //    $.get("/Home/GetPlayer2Form", function (data) {
+
+        //        $('#jsPlayerFormContainer').html(data);
+
+        //        initValidator("player2Form");
+
+        //    });
+        //}
+
+        var currentPlayer = 1;
+        var symbol = "X";
+
+        $(document).on('click', '.square', function () {
+
+            var square = $(this);
+
+            square.find('div').html(symbol);
+
+            var currentRound = $('#currentRound').val();
+
+
+            toastr.info("CurrentRound = " + currentRound);
+            toastr.info("Currentplayer = " + currentPlayer);
+
+
+            if (currentPlayer == 1) {
+                currentPlayer = 2;
+                symbol = "O";
+            }
+            else {
+                currentPlayer = 1;
+                symbol = "X";
+            }
+
+            
+            
+
+        });
+
+    </script>
+}
