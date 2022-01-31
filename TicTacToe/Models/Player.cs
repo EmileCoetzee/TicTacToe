@@ -26,4 +26,11 @@ namespace TicTacToe.Models
 
         public int Player2Id { get; set; }
     }
+
+    public class PlayerPlayViewModel
+    {
+        public Player Player1 { get; set; }
+
+        public Player Player2 { get; set; }
+    }
 }

@@ -59,6 +59,34 @@ namespace TicTacToe.DataAccess
             }
 		}
 
+        // get player name
+        // params = 0. playerId
+        public Player GetPlayer(int playerId)
+        {
+            Player player = new Player();
+
+            try
+            {
+                string sql = @"SELECT *
+				FROM
+				Players 
+				WHERE
+				Id = @Id";
+
+
+                using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
+                {
+                    player = cnn.QuerySingleOrDefault<Player>(sql, new { Id = playerId });
+                }
+            }
+            catch (Exception)
+            {
+                return player;
+            }
+
+            return player;
+        }
+
 
         // create new game object
         // params = 0. player1Id, 1. player2Id
@@ -125,5 +153,112 @@ namespace TicTacToe.DataAccess
             }
 
         }
+
+        // clear Moves
+        // params = 0. gameId 
+        // return success/failure
+        public int ClearMoves(int gameId)
+        {
+            try
+            {
+                var sql = @"UPDATE Moves SET 
+                B1 = null,
+                B2 = null,
+                B3 = null,
+                B4 = null,
+                B5 = null,
+                B6 = null,
+                B7 = null,
+                B8 = null,
+                B9 = null
+                   WHERE GamesId = @GameId;";
+
+
+                using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
+                {
+                    cnn.Execute(sql, new { GameId = gameId });
+                }
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+
+            return 1;
+        }
+
+        // update Player score
+        // params = 0. gameId, 1.player number, 2.points
+        // return success/failure
+        public int UpdateScore(int gameId, int currentPlayer, int points)
+        {
+            try
+            {
+                var sql = "SELECT * FROM Games WHERE Id = @Id";
+
+                var sqlUpdate = @"UPDATE Games SET 
+                    Player1Points = @Points
+                    WHERE Id = @Id;";
+
+
+                using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
+                {
+
+                    Game game = cnn.QuerySingleOrDefault<Game>(sql, new { Id = gameId });
+
+                    if (game != null)
+                    {
+                        if (currentPlayer == 1)
+                        {
+                            game.Player1Points += game.Player1Points + points;
+                        }
+                        else
+                        {
+                            game.Player2Points = game.Player2Points + points;
+
+                            sqlUpdate = @"UPDATE Games SET 
+                            Player2Points = @Points
+                            WHERE Id = @Id;";   
+                        }
+                    }
+
+                    cnn.Execute(sqlUpdate, new { Id = gameId, Points = points });
+                }
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+
+            return 1;
+        }
+
+        // update highest round completed
+        // params = 0. gameId, 1. last round completed
+        // return success/failure
+        public int UpdateHighestRoundCompleted(int gameId, int currentRound)
+        {
+            try
+            {
+
+                var sql = @"UPDATE Games SET 
+                    HighestRoundCompleted = @Round
+                    WHERE Id = @Id;";
+
+
+                using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
+                {
+                    cnn.Execute(sql, new { Id = gameId, Round = currentRound });
+                }
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+
+            return 1;
+        }
+
+
     }
 }

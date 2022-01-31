@@ -1,4 +1,6 @@
-﻿@{
+﻿@model TicTacToe.Models.PlayerPlayViewModel
+
+@{
     ViewBag.Title = "Play";
 }
 
@@ -6,10 +8,37 @@
 
 <input type="hidden" id="gameId" name="gameId" value="@ViewBag.GameId" />
 
+
+<input type="hidden" id="player1Name" name="player1Name" value="@Model.Player1.Name" />
+
+<input type="hidden" id="player2Name" name="player2Name" value="@Model.Player2.Name" />
+
+
+
 <div class="container play-container py-5">
 
-    @{ Html.RenderAction("GetBoard", "Home", new { id = 1 }); }
+    @{ Html.RenderAction("GetBoard", "Home", new { currentRound = 1, currentPlayerName = Model.Player1.Name }); }
 
+</div>
+
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary d-none jsModalActivate" data-bs-toggle="modal" data-bs-target="#messageModal">
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalLabel">ROUND OVER</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -17,19 +46,6 @@
 {
 
     <script>
-
-
-
-        //$(document).ready(function () {}
-        //{
-        //    $.get("/Home/GetPlayer2Form", function (data) {
-
-        //        $('#jsPlayerFormContainer').html(data);
-
-        //        initValidator("player2Form");
-
-        //    });
-        //}
 
         var currentPlayer = 1;
         var symbol = "X";
@@ -49,16 +65,50 @@
             var gameId = $('#gameId').val();
             var blockId = square.attr('data-id'); //squares are numbered in left-to-right fashion
 
-            toastr.info("CurrentRound = " + currentRound);
-            toastr.info("Currentplayer = " + currentPlayer);
-
-
             //save move
             $.post("/Home/SaveMove/" + gameId + "/" + currentRound + "/" + currentPlayer + "/" + blockId, function (data) {
 
                 if (data.resultCode == 1) {
 
-                    toastr.success(data.data);
+                    if (data.winner != "") {
+
+                        var playerName = "@Model.Player1.Name";
+
+                        if (data.winner == 2) {
+                            playerName = "@Model.Player2.Name";
+                        }
+
+                        activateAlert(playerName + " WON!");
+
+
+                        currentPlayer = 1;
+                        symbol = "X";
+                    }
+
+                    if (data.draw != "") {
+
+                        activateAlert(data.data);
+                    }
+
+                    if (data.newRound != "") {
+
+                        if (data.newRound < 4) {
+
+                            $.get("/Home/GetBoard/" + data.newRound + "/@Model.Player1.Name", function (data) {
+
+                                $('.play-container').html(data);
+                            });
+                        }
+                        else {
+
+                            setTimeout(function () {
+
+                                window.location.href = "/Home/GameOver/" + gameId;
+
+                            }, 2000);
+                        }
+                    }
+                    
                 }
                 else {
 
@@ -70,17 +120,28 @@
 
             if (currentPlayer == 1) {
                 currentPlayer = 2;
+                $('#playerName').html('@Model.Player2.Name');
                 symbol = "O";
             }
             else {
                 currentPlayer = 1;
+                $('#playerName').html('@Model.Player1.Name');
                 symbol = "X";
             }
+
+            $('#playerNumber').html(currentPlayer);
 
 
 
 
         });
+
+        //show message modal
+        function activateAlert(message) {
+
+            $('.modal-body').html(message);
+            $('.jsModalActivate').click();
+        }
 
     </script>
 }

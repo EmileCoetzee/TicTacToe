@@ -1,4 +1,10 @@
-﻿<input type="hidden" id="currentRound" value="@ViewBag.CurrentRound" />
+﻿@model TicTacToe.Models.BoardViewModel
+
+<h1>Round @Model.Round</h1>
+
+<h2>Turn: Player <span id="playerNumber">1</span> - <span id="playerName">@Model.PlayerName</span></h2>
+
+<input type="hidden" id="currentRound" value="@Model.Round" />
 
 <div class="row">
 

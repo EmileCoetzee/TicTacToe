@@ -25,11 +25,15 @@ namespace TicTacToe
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css",
-                      "~/Content/toastr.css"));
+                      "~/Content/toastr.css",
+                      "~/Content/animate.css"));
 
 
             bundles.Add(new ScriptBundle("~/bundles/VendorsJS").Include(
-               "~/Scripts/toastr.js"));
+               "~/Scripts/toastr.js",
+               "~/Scripts/bootbox.js"));
+
+
         }
     }
 }

@@ -20,4 +20,12 @@ namespace TicTacToe.Models
         public int HighestRoundCompleted { get; set; }
 
     }
+
+    public class BoardViewModel
+    {
+        public int Round { get; set; }
+
+        public string PlayerName { get; set; }
+
+    }
 }
