@@ -201,6 +201,8 @@ namespace TicTacToe.DataAccess
                     WHERE Id = @Id;";
 
 
+                int updatedPoints = 0;
+
                 using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
                 {
 
@@ -210,11 +212,11 @@ namespace TicTacToe.DataAccess
                     {
                         if (currentPlayer == 1)
                         {
-                            game.Player1Points += game.Player1Points + points;
+                            updatedPoints = game.Player1Points + points;
                         }
                         else
                         {
-                            game.Player2Points = game.Player2Points + points;
+                            updatedPoints = game.Player2Points + points;
 
                             sqlUpdate = @"UPDATE Games SET 
                             Player2Points = @Points
@@ -222,7 +224,7 @@ namespace TicTacToe.DataAccess
                         }
                     }
 
-                    cnn.Execute(sqlUpdate, new { Id = gameId, Points = points });
+                    cnn.Execute(sqlUpdate, new { Id = gameId, Points = updatedPoints });
                 }
             }
             catch (Exception)
