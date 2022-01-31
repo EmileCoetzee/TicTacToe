@@ -19,6 +19,8 @@ namespace TicTacToe.Models
 
         public int HighestRoundCompleted { get; set; }
 
+        public Player Player { get; set; }
+
     }
 
     public class BoardViewModel
@@ -27,5 +29,21 @@ namespace TicTacToe.Models
 
         public string PlayerName { get; set; }
 
+    }
+
+    public class GamePlayerViewModel
+    {
+        public Game Game { get; set; }
+
+        public Player Player1 { get; set; }
+
+        public Player Player2 { get; set; }
+    }
+
+    public class LoadGameViewModel
+    {
+        public Player Player1 { get; set; }
+
+        public Player Player2 { get; set; }
     }
 }

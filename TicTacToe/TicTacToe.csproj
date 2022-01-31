@@ -147,6 +147,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="BusinessLogic\Calculations.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DataAccess\Query.cs" />
     <Compile Include="Global.asax.cs">
@@ -245,6 +246,8 @@
     <Content Include="Views\Home\GetPlayer2Form.cshtml" />
     <Content Include="Views\Home\Play.cshtml" />
     <Content Include="Views\Home\GetBoard.cshtml" />
+    <Content Include="Views\Home\GameOver.cshtml" />
+    <Content Include="Views\Home\Load.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

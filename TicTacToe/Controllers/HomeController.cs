@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TicTacToe.BusinessLogic;
 using TicTacToe.DataAccess;
 using TicTacToe.Models;
 
@@ -30,6 +31,53 @@ namespace TicTacToe.Controllers
         public ActionResult Start()
         {
             return View();
+        }
+
+        // GET: Home/Load 
+        public ActionResult Load()
+        {
+            LoadGameViewModel vm = new LoadGameViewModel();
+
+            vm.Player1 = new Player();
+            vm.Player2 = new Player();
+
+            return View(vm);
+        }
+
+        // POST: Home/LoadGame
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult LoadGame(LoadGameViewModel model)
+        {
+
+            model.Player1.Name = _htmlSanitizer.Sanitize(model.Player1.Name);
+            model.Player2.Name = _htmlSanitizer.Sanitize(model.Player2.Name);
+
+            try
+            {
+                if (!ModelState.IsValid)
+                    throw new Exception("Error, some data is missing.  Please ensure that all fields are entered.");
+
+                //get player details
+                model.Player1 = _query.GetPlayerDetail(model.Player1.Name);
+                model.Player2 = _query.GetPlayerDetail(model.Player2.Name);
+
+
+                if (model.Player1 is null || model.Player2 is null)
+                    throw new Exception("A saved game could not be found for these players.");
+
+                //check for any games that don't have a highestRound completed of 3
+                Game game = _query.CheckForSavedGames(model.Player1.Id, model.Player2.Id);
+
+                if (game is null)
+                    throw new Exception("A saved game could not be found for these players.");
+                
+                return Json(new { data = "Starting Game...", resultCode = 1, player1Id = model.Player1.Id, player2Id = model.Player2.Id, gameId = game.Id }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { data = ex.Message.ToString(), resultCode = 0 }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         // GET: Home/GetPlayer1Form (Partial)
@@ -79,7 +127,7 @@ namespace TicTacToe.Controllers
                 int playerId = _query.CheckIfPlayerExists(model.Player.Name);
 
                 if (!model.Player.isPlayer1)
-                    redirectURL = "/Home/Play/" + model.Player1Id + "/" + playerId;
+                    redirectURL = "/Home/Play/" + model.Player1Id + "/" + playerId + "/" + 0;
 
 
                 return Json(new { data = redirectURL, resultCode = 1, player1Id = playerId }, JsonRequestBehavior.AllowGet);
@@ -91,12 +139,58 @@ namespace TicTacToe.Controllers
         }
 
         // GET: Home/Play/1/1
-        [Route("Home/Play/{player1Id}/{player2Id}")]
-        public ActionResult Play(int player1Id, int player2Id)
+        [Route("Home/Play/{player1Id}/{player2Id}/{gameId}")]
+        public ActionResult Play(int player1Id, int player2Id, int gameId)
         {
-            //create new game
-            int gameId = _query.CreateGame(player1Id, player2Id);
+            Game game = new Game();
+            Move move = new Move();
 
+            int currentPlayer = 1;
+
+
+            //create new game
+            if (gameId == 0)
+            {
+                gameId = _query.CreateGame(player1Id, player2Id);
+
+            }
+            else
+            {
+                //get current round
+                game = _query.GetGameDetail(gameId);
+
+                //get moves list
+                move = _query.GetMoves(gameId);
+
+                
+
+                int p1MovesCount = 0;
+                int p2MovesCount = 0;
+
+                int[] moves = { move.B1, move.B2, move.B3, move.B4, move.B5, move.B6, move.B7, move.B8, move.B9 };
+
+                for (int i = 0; i < moves.Length; i++)
+                {
+                    switch (moves[i])
+                    {
+                        case 1:
+                            p1MovesCount++;
+                            break;
+                        case 2:
+                            p2MovesCount++;
+                            break;
+                    }
+                }
+
+                if (p1MovesCount > p2MovesCount)
+                {
+                    currentPlayer = 2;
+                }
+                
+            }
+
+
+            ViewBag.CurrentPlayer = currentPlayer;
             ViewBag.GameId = gameId;
 
 
@@ -105,10 +199,13 @@ namespace TicTacToe.Controllers
 
             Player player2 = _query.GetPlayer(player2Id);
 
+
             PlayerPlayViewModel playerVM = new PlayerPlayViewModel();
 
             playerVM.Player1 = player1;
             playerVM.Player2 = player2;
+            playerVM.Game = game;
+            playerVM.Move = move;
 
             return View(playerVM);
         }
@@ -145,68 +242,13 @@ namespace TicTacToe.Controllers
                 if (move is null)
                     throw new Exception("Error, could not save move, please try again.");
 
-                
-
-
                 int[] moves = { move.B1, move.B2, move.B3, move.B4, move.B5, move.B6, move.B7, move.B8, move.B9 };
 
-                int winner = 0;
-                //List<int> checkingSequence = new List<int>();
-
-                //check for win sequences
-
-                //row 1 { 0, 1, 2 }
-                if (moves[0] == currentPlayer && moves[1] == currentPlayer && moves[2] == currentPlayer)
-                {
-                    winner = currentPlayer;
-                }
-
-                //row 2 { 3, 4, 5 }
-                if (moves[3] == currentPlayer && moves[4] == currentPlayer && moves[5] == currentPlayer)
-                {
-                    winner = currentPlayer;
-                }
-
-                //row 3 { 6, 7, 8 }
-                if (moves[6] == currentPlayer && moves[7] == currentPlayer && moves[8] == currentPlayer)
-                {
-                    winner = currentPlayer;
-                }
-
-                //column 1 { 0, 3, 6 }
-                if (moves[0] == currentPlayer && moves[3] == currentPlayer && moves[6] == currentPlayer)
-                {
-                    winner = currentPlayer;
-                }
-
-                //column 2 { 1, 4, 7 }
-                if (moves[1] == currentPlayer && moves[4] == currentPlayer && moves[7] == currentPlayer)
-                {
-                    winner = currentPlayer;
-                }
-
-                //column 3 { 2, 5, 8 }
-                if (moves[2] == currentPlayer && moves[5] == currentPlayer && moves[8] == currentPlayer)
-                {
-                    winner = currentPlayer;
-                }
-
-                //diagonal 1 { 0, 4, 8 }
-                if (moves[0] == currentPlayer && moves[4] == currentPlayer && moves[8] == currentPlayer)
-                {
-                    winner = currentPlayer;
-                }
-
-                //diagonal 2 { 2, 4, 6 }
-                if (moves[2] == currentPlayer && moves[4] == currentPlayer && moves[6] == currentPlayer)
-                {
-                    winner = currentPlayer;
-                }
+                int winner = Calculations.GetWinner(moves, currentPlayer);
 
 
                 if (winner != 0)
                 {
-
 
                     //update player score (round winner gets 10 points)
                     _query.UpdateScore(gameId, currentPlayer, 10);
@@ -227,7 +269,7 @@ namespace TicTacToe.Controllers
                 }
 
                 //ran out of moves
-                if (!moves.Contains(0))
+                else if (!moves.Contains(0))
                 {
                    
                     //update highest round completed
@@ -245,7 +287,6 @@ namespace TicTacToe.Controllers
                 }
 
 
-
                 return Json(new { data = "", resultCode = 1, newRound = "", winner = "", draw = "" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -260,17 +301,18 @@ namespace TicTacToe.Controllers
         [Route("Home/GameOver/{gameId}")]
         public ActionResult GameOver(int gameId)
         {
-
-            //get game winner
-            //Game game = _query.GetPlayerPoints();
-
-            //clear moves table
+            //delete moves
+            _query.DeleteMoves(gameId);
 
 
+            //get game details
+            GamePlayerViewModel vm = new GamePlayerViewModel();
 
+            vm.Game = _query.GetGameDetail(gameId);
+            vm.Player1 = _query.GetPlayerDetail(vm.Game.Player1Id);
+            vm.Player2 = _query.GetPlayerDetail(vm.Game.Player2Id);
 
-
-            return View();
+            return View(vm);
         }
     }
 }

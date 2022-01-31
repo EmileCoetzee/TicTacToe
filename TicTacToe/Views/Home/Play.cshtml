@@ -8,12 +8,29 @@
 
 <input type="hidden" id="gameId" name="gameId" value="@ViewBag.GameId" />
 
-
 <input type="hidden" id="player1Name" name="player1Name" value="@Model.Player1.Name" />
 
 <input type="hidden" id="player2Name" name="player2Name" value="@Model.Player2.Name" />
 
+@if (Model.Game != null)
+{
+    <input type="hidden" id="highestRoundCompleted" value="@Model.Game.HighestRoundCompleted">
+}
 
+@if (Model.Move != null)
+{
+    <input type="hidden" id="B1" value="@Model.Move.B1">
+    <input type="hidden" id="B2" value="@Model.Move.B2">
+    <input type="hidden" id="B3" value="@Model.Move.B3">
+    <input type="hidden" id="B4" value="@Model.Move.B4">
+    <input type="hidden" id="B5" value="@Model.Move.B5">
+    <input type="hidden" id="B6" value="@Model.Move.B6">
+    <input type="hidden" id="B7" value="@Model.Move.B7">
+    <input type="hidden" id="B8" value="@Model.Move.B8">
+    <input type="hidden" id="B9" value="@Model.Move.B9">
+
+    <input type="hidden" id="currentPlayer" value="@ViewBag.CurrentPlayer"/>
+}
 
 <div class="container play-container py-5">
 
@@ -23,8 +40,7 @@
 
 
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary d-none jsModalActivate" data-bs-toggle="modal" data-bs-target="#messageModal">
-</button>
+<button type="button" class="btn btn-primary d-none jsModalActivate" data-bs-toggle="modal" data-bs-target="#messageModal"></button>
 
 <!-- Modal -->
 <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
@@ -35,7 +51,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                
+
             </div>
         </div>
     </div>
@@ -88,6 +104,9 @@
                     if (data.draw != "") {
 
                         activateAlert(data.data);
+
+                        currentPlayer = 1;
+                        symbol = "X";
                     }
 
                     if (data.newRound != "") {
@@ -108,7 +127,7 @@
                             }, 2000);
                         }
                     }
-                    
+
                 }
                 else {
 
@@ -142,6 +161,8 @@
             $('.modal-body').html(message);
             $('.jsModalActivate').click();
         }
+
+
 
     </script>
 }

@@ -262,5 +262,156 @@ namespace TicTacToe.DataAccess
         }
 
 
+        // get game detail
+        // params = 0. gameId
+        // return game object
+        public Game GetGameDetail(int gameId)
+        {
+
+            string sql = @"SELECT * 
+                FROM Games 
+                WHERE Id = @Id;";
+
+            using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
+            {
+                try
+                {
+                   return cnn.QuerySingleOrDefault<Game>(sql, new { Id = gameId });
+
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+
+            }
+        }
+
+        // get games that are not complete
+        // params = 0. player1Id, 1.player2Id
+        // return game object
+        public Game CheckForSavedGames(int player1Id, int player2Id)
+        {
+            string sql = @"SELECT TOP (1) * 
+                FROM Games 
+                WHERE HighestRoundCompleted < 3
+                AND Player1Id = @Player1Id 
+                AND Player2Id = @Player2Id";
+
+
+            using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
+            {
+                try
+                {
+                    return cnn.QuerySingleOrDefault<Game>(sql, new { Player1Id = player1Id, Player2Id = player2Id });
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+
+            }
+        }
+
+        // get Moves list
+        // params = 0. gameId
+        // return Move object
+        public Move GetMoves(int gameId)
+        {
+            try
+            {
+
+                var sql = "SELECT * FROM Moves WHERE GamesId = @GameId";
+
+
+                using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
+                {
+                    return cnn.QuerySingleOrDefault<Move>(sql, new { GameId = gameId });
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+        }
+
+
+        // get player detail
+        // params = 0. playerId
+        // return player object
+        public Player GetPlayerDetail(int playerId)
+        {
+
+            string sql = @"SELECT * 
+                FROM Players 
+                WHERE Id = @Id;";
+
+            using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
+            {
+                try
+                {
+                    return cnn.QuerySingleOrDefault<Player>(sql, new { Id = playerId });
+
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+
+            }
+        }
+
+        // get player detail
+        // params = 0. player name
+        // return player object
+        public Player GetPlayerDetail(string playerName)
+        {
+
+            string sql = @"SELECT TOP(1) * 
+                FROM Players 
+                WHERE Name = @Name;";
+
+            using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
+            {
+                try
+                {
+                    return cnn.QuerySingleOrDefault<Player>(sql, new { Name = playerName });
+
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+
+            }
+        }
+
+
+        // delete moves for particular game
+        // params = 0. gameId
+        public int DeleteMoves(int gameId)
+        {
+            var sql = @"DELETE FROM 
+                    Moves 
+                    WHERE GamesId = @Id;";
+
+            using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
+            {
+                try
+                {
+                    cnn.Execute(sql, new { Id = gameId });
+
+                }
+                catch (Exception)
+                {
+                    return 0;
+                }
+
+            }
+
+            return 1;
+        }
+
     }
 }
