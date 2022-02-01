@@ -318,6 +318,8 @@ namespace TicTacToe.DataAccess
         // return Move object
         public Move GetMoves(int gameId)
         {
+            Move move = new Move();
+
             try
             {
 
@@ -331,7 +333,7 @@ namespace TicTacToe.DataAccess
             }
             catch (Exception)
             {
-                return null;
+                return move;
             }
 
         }

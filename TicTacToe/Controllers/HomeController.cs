@@ -120,7 +120,6 @@ namespace TicTacToe.Controllers
                     throw new Exception("Error, some data is missing.  Please ensure that all fields are entered.");
 
 
-
                 model.Player.Name = _htmlSanitizer.Sanitize(model.Player.Name);
 
                 //check if player exists
@@ -163,7 +162,6 @@ namespace TicTacToe.Controllers
                 move = _query.GetMoves(gameId);
 
                 
-
                 int p1MovesCount = 0;
                 int p2MovesCount = 0;
 
@@ -190,14 +188,19 @@ namespace TicTacToe.Controllers
             }
 
 
-            ViewBag.CurrentPlayer = currentPlayer;
-            ViewBag.GameId = gameId;
-
-
             Player player1 = _query.GetPlayer(player1Id);
             player1.isPlayer1 = true;
 
             Player player2 = _query.GetPlayer(player2Id);
+
+            ViewBag.CurrentPlayer = currentPlayer;
+            ViewBag.GameId = gameId;
+            ViewBag.CurrentPlayerName = player1.Name;
+
+            if (currentPlayer == 2)
+            {
+                ViewBag.CurrentPlayerName = player2.Name;
+            }
 
 
             PlayerPlayViewModel playerVM = new PlayerPlayViewModel();
