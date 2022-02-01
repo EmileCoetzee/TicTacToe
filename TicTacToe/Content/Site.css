@@ -1,4 +1,16 @@
-﻿.square
+﻿/* header */
+.nav-link.active {
+    color: #213e88 !important;
+}
+
+/* containers */
+.body-content {
+    min-height: calc(100vh - 56px);
+}
+
+
+/* board */
+.square
 {
     height:150px;
     position:relative;
@@ -35,4 +47,75 @@
 .play-container
 {
     max-width:600px;
+}
+
+
+
+/* gradients */
+.gradient {
+    position:relative;
+    width:100%;
+    height:100%;
+    background: #FF5F6D; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #FFC371, #FF5F6D); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #FFC371, #FF5F6D); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    border-radius:20px;
+    min-height:150px;
+}
+
+.gradient > div
+{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    font-size:1.8rem;
+    color:#fff;
+    width:95%;
+    text-align:center;
+}
+
+
+.gradient:hover
+{
+    background: #FF5F6D;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to bottom, #FFC371, #FF5F6D);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #FFC371, #FF5F6D); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
+.button-container:nth-child(2) .gradient {
+    background: #16BFFD; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #CB3066, #16BFFD); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #CB3066, #16BFFD); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.button-container:nth-child(2):hover .gradient {
+    background: #16BFFD; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to bottom, #CB3066, #16BFFD); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #CB3066, #16BFFD); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.button-container:nth-child(3) .gradient {
+    background: #EECDA3; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #EF629F, #EECDA3); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #EF629F, #EECDA3); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.button-container:nth-child(3):hover .gradient {
+    background: #EECDA3; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to bottom, #EF629F, #EECDA3); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #EF629F, #EECDA3); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.button-container:nth-child(4) .gradient {
+    background: #5614B0; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to left, #DBD65C, #5614B0); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #DBD65C, #5614B0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.button-container:nth-child(4):hover .gradient {
+    background: #5614B0; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to top, #DBD65C, #5614B0); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to top, #DBD65C, #5614B0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
