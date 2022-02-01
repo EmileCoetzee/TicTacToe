@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -9,8 +10,10 @@ namespace TicTacToe.Models
     {
         public int Id { get; set; }
 
+        [Display(Name="Player Name")]
         public string Name { get; set; }
 
+        [Display(Name = "Score")]
         public int TotalPoints { get; set; }
 
         public bool isPlayer1 { get; set; }

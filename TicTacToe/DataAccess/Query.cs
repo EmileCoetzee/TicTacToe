@@ -415,5 +415,55 @@ namespace TicTacToe.DataAccess
             return 1;
         }
 
+
+        // update player total points
+        // params = 0. player object
+        public int UpdatePlayerPoints(Player player)
+        {
+            try
+            {
+
+                var sql = @"UPDATE Players SET 
+                    TotalPoints = @Points
+                    WHERE Id = @Id;";
+
+
+                using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
+                {
+                    cnn.Execute(sql, new { Id = player.Id, Points = player.TotalPoints });
+                }
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+
+            return 1;
+        }
+
+        // get leaderboard scores
+        // return list of player object
+        public List<Player> LoadScores()
+        {
+
+            string sql = @"SELECT * 
+                FROM Players 
+                ORDER BY TotalPoints DESC";
+
+            using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
+            {
+                try
+                {
+                    return cnn.Query<Player>(sql).ToList();
+
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+
+            }
+        }
+
     }
 }

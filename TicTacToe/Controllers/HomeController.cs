@@ -9,7 +9,7 @@ using TicTacToe.Models;
 
 namespace TicTacToe.Controllers
 {
-    [System.Runtime.InteropServices.Guid("CE5AC464-DD4C-45BE-80E2-CD24A9D0166A")]
+    
     public class HomeController : Controller
     {
         Query _query;
@@ -180,6 +180,7 @@ namespace TicTacToe.Controllers
                     }
                 }
 
+                //determine who's turn it is
                 if (p1MovesCount > p2MovesCount)
                 {
                     currentPlayer = 2;
@@ -307,7 +308,6 @@ namespace TicTacToe.Controllers
             //delete moves
             _query.DeleteMoves(gameId);
 
-
             //get game details
             GamePlayerViewModel vm = new GamePlayerViewModel();
 
@@ -315,7 +315,37 @@ namespace TicTacToe.Controllers
             vm.Player1 = _query.GetPlayerDetail(vm.Game.Player1Id);
             vm.Player2 = _query.GetPlayerDetail(vm.Game.Player2Id);
 
+            vm.Player1.TotalPoints = vm.Player1.TotalPoints + vm.Game.Player1Points;
+            vm.Player2.TotalPoints = vm.Player2.TotalPoints + vm.Game.Player2Points;
+
+
+            //update player total points
+            _query.UpdatePlayerPoints(vm.Player1);
+            _query.UpdatePlayerPoints(vm.Player2);
+
             return View(vm);
         }
+
+        // GET: Home/Leaderboard
+        public ActionResult Leaderboard()
+        {
+            List<Player> playerList = new List<Player>();
+
+            playerList = _query.LoadScores();
+
+            return View(playerList);
+        }
+
+        // GET: Home/GameHistory
+        public ActionResult GameHistory()
+        {
+            List<Player> playerList = new List<Player>();
+
+            playerList = _query.LoadScores();
+
+            return View(playerList);
+        }
+
+
     }
 }
