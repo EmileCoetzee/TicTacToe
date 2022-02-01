@@ -249,6 +249,7 @@
     <Content Include="Views\Home\GameOver.cshtml" />
     <Content Include="Views\Home\Load.cshtml" />
     <Content Include="Views\Home\Leaderboard.cshtml" />
+    <Content Include="Views\Home\GameHistory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

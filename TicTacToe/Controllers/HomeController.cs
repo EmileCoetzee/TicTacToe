@@ -308,6 +308,9 @@ namespace TicTacToe.Controllers
             //delete moves
             _query.DeleteMoves(gameId);
 
+            //update timestamp
+            _query.UpdateGameTimeStamp(gameId);
+
             //get game details
             GamePlayerViewModel vm = new GamePlayerViewModel();
 
@@ -339,11 +342,29 @@ namespace TicTacToe.Controllers
         // GET: Home/GameHistory
         public ActionResult GameHistory()
         {
-            List<Player> playerList = new List<Player>();
+            List<GamePlayerViewModel> vmList = new List<GamePlayerViewModel>();
 
-            playerList = _query.LoadScores();
+            List<Game> gameList = new List<Game>();
 
-            return View(playerList);
+            gameList = _query.GetGamesCompleted();
+
+            foreach (var game in gameList)
+            {
+                Player player1 = _query.GetPlayer(game.Player1Id);
+                Player player2 = _query.GetPlayer(game.Player2Id);
+
+                GamePlayerViewModel vm = new GamePlayerViewModel
+                {
+                    Game = game,
+                    Player1 = player1, 
+                    Player2 = player2
+                };
+
+                vmList.Add(vm);
+            }
+
+
+            return View(vmList);
         }
 
 

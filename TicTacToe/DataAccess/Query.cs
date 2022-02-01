@@ -96,9 +96,9 @@ namespace TicTacToe.DataAccess
             try
             {
                 string sql = @"INSERT 
-                INTO Games (Player1Id, Player2Id) 
+                INTO Games (Player1Id, Player2Id, Date) 
                 OUTPUT INSERTED.Id 
-                VALUES (@Player1Id, @Player2Id)";
+                VALUES (@Player1Id, @Player2Id, @Date)";
 
                 string sqlMoves = @"INSERT 
                 INTO Moves (GamesId) 
@@ -107,7 +107,7 @@ namespace TicTacToe.DataAccess
 
                 using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
                 {
-                    int gameId = cnn.QuerySingle<int>(sql, new { Player1Id = player1Id, Player2Id = player2Id });
+                    int gameId = cnn.QuerySingle<int>(sql, new { Player1Id = player1Id, Player2Id = player2Id, Date = DateTime.Now.ToString("dd-MM-yy HH:mm:ss") });
 
                     if (gameId != 0)
                         cnn.Execute(sqlMoves, new { GameId = gameId });
@@ -177,6 +177,29 @@ namespace TicTacToe.DataAccess
                 using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
                 {
                     cnn.Execute(sql, new { GameId = gameId });
+                }
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+
+            return 1;
+        }
+
+        // update game completed date
+        // params = 0. gameId 
+        public int UpdateGameTimeStamp(int gameId)
+        {
+            try
+            {
+                var sql = @"UPDATE Games SET
+                   Date = @Date
+                   WHERE Id = @Id;";
+
+                using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
+                {
+                    cnn.Execute(sql, new { Date = DateTime.Now.ToString("dd-MM-yy HH:mm:ss"), Id = gameId });
                 }
             }
             catch (Exception)
@@ -304,6 +327,30 @@ namespace TicTacToe.DataAccess
                 try
                 {
                     return cnn.QuerySingleOrDefault<Game>(sql, new { Player1Id = player1Id, Player2Id = player2Id });
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+
+            }
+        }
+
+        // get games that are complete
+        // return list of game object
+        public List<Game> GetGamesCompleted()
+        {
+
+            string sql = @"SELECT * FROM Games 
+                WHERE HighestRoundCompleted = 3 
+                ORDER BY 'Date' DESC;";
+
+            using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
+            {
+                try
+                {
+                    return cnn.Query<Game>(sql).ToList();
+
                 }
                 catch (Exception)
                 {
