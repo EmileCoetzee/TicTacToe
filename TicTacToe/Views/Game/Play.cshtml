@@ -1,0 +1,219 @@
+﻿@model TicTacToe.Models.PlayerPlayViewModel
+
+@{
+    ViewBag.Title = "Play";
+}
+
+<h2>Play</h2>
+
+<input type="hidden" id="gameId" name="gameId" value="@ViewBag.GameId" />
+
+<input type="hidden" id="player1Name" name="player1Name" value="@Model.Player1.Name" />
+
+<input type="hidden" id="player2Name" name="player2Name" value="@Model.Player2.Name" />
+
+@if (Model.Game != null)
+{
+    <input type="hidden" id="highestRoundCompleted" value="@Model.Game.HighestRoundCompleted">
+}
+
+@if (Model.Move != null)
+{
+    <input type="hidden" id="B1" class="jsLoadedMove" value="@Model.Move.B1">
+    <input type="hidden" id="B2" class="jsLoadedMove" value="@Model.Move.B2">
+    <input type="hidden" id="B3" class="jsLoadedMove" value="@Model.Move.B3">
+    <input type="hidden" id="B4" class="jsLoadedMove" value="@Model.Move.B4">
+    <input type="hidden" id="B5" class="jsLoadedMove" value="@Model.Move.B5">
+    <input type="hidden" id="B6" class="jsLoadedMove" value="@Model.Move.B6">
+    <input type="hidden" id="B7" class="jsLoadedMove" value="@Model.Move.B7">
+    <input type="hidden" id="B8" class="jsLoadedMove" value="@Model.Move.B8">
+    <input type="hidden" id="B9" class="jsLoadedMove" value="@Model.Move.B9">
+
+    <input type="hidden" id="currentPlayer" value="@ViewBag.CurrentPlayer" />
+    <input type="hidden" id="currentPlayerName" value="@ViewBag.CurrentPlayerName" />
+
+}
+
+<div class="container play-container py-5">
+
+    @{ Html.RenderAction("GetBoard", "Game", new { currentRound = 1, currentPlayerName = Model.Player1.Name }); }
+
+</div>
+
+
+
+<button type="button" class="btn btn-primary d-none jsModalActivate" data-bs-toggle="modal" data-bs-target="#messageModal"></button>
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalLabel">ROUND OVER</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts
+{
+
+    <script>
+
+        //init values
+        var currentPlayer = 1;
+        var symbol = "X";
+
+
+        //load saved game upon page load, if any saved data is found
+        $(document).ready(function () {
+
+            if ($('#highestRoundCompleted')) {
+
+                //set new init values
+                var newRound = parseInt($('#highestRoundCompleted').val()) + 1;
+                currentPlayer = $('#currentPlayer').val();
+                var currentPlayerName = $('#currentPlayerName').val();
+
+
+                //get board using loaded values
+                $.get("/Game/GetBoard/" + newRound + "/" + currentPlayerName, function (data) {
+
+                    $('.play-container').html(data);
+
+                    $('#playerNumber').html(currentPlayer);
+
+                    if (currentPlayer == 2) {
+
+                        symbol = "O";
+                    }
+
+                    //place board symbols
+                    $('.jsLoadedMove').each(function (index) {
+                        
+
+                        if ($(this).val() != 0) {
+
+                            var loadedSymbol = "X";
+
+                            if ($(this).val() == 2) {
+                                loadedSymbol = "O";
+                            }
+
+                            $("[data-id='" + (index + 1) + "']").find('div').html(loadedSymbol);
+                        }
+
+                    });
+
+                });
+
+
+            }
+
+        });
+
+        //onclick handler for squares
+        $(document).on('click', '.square', function () {
+
+            var square = $(this);
+
+            if (square.find('div').html().length > 0) {
+                toastr.error("Cannot overwrite move, try a different move.");
+                return;
+            }
+
+            square.find('div').html(symbol);
+
+            var currentRound = $('#currentRound').val();
+            var gameId = $('#gameId').val();
+            var blockId = square.attr('data-id'); //squares are numbered in left-to-right fashion
+
+            //save move
+            $.post("/Game/SaveMove/" + gameId + "/" + currentRound + "/" + currentPlayer + "/" + blockId, function (data) {
+
+                if (data.resultCode == 1) {
+
+                    if (data.winner != "") {
+
+                        var playerName = "@Model.Player1.Name";
+
+                        if (data.winner == 2) {
+                            playerName = "@Model.Player2.Name";
+                        }
+
+                        activateAlert(playerName + " WON!");
+
+
+                        currentPlayer = 1;
+                        symbol = "X";
+                    }
+
+                    if (data.draw != "") {
+
+                        activateAlert(data.data);
+
+                        currentPlayer = 1;
+                        symbol = "X";
+                    }
+
+                    if (data.newRound != "") {
+
+                        if (data.newRound < 4) {
+
+                            $.get("/Game/GetBoard/" + data.newRound + "/@Model.Player1.Name", function (data) {
+
+                                $('.play-container').html(data);
+                            });
+                        }
+                        else {
+
+                            setTimeout(function () {
+
+                                window.location.href = "/Game/GameOver/" + gameId;
+
+                            }, 2000);
+                        }
+                    }
+
+                }
+                else {
+
+                    toastr.error(data.data);
+                }
+
+            });
+
+
+            if (currentPlayer == 1) {
+                currentPlayer = 2;
+                $('#playerName').html('@Model.Player2.Name');
+                symbol = "O";
+            }
+            else {
+                currentPlayer = 1;
+                $('#playerName').html('@Model.Player1.Name');
+                symbol = "X";
+            }
+
+            $('#playerNumber').html(currentPlayer);
+
+
+
+
+        });
+
+
+        //show message modal
+        function activateAlert(message) {
+
+            $('.modal-body').html(message);
+            $('.jsModalActivate').click();
+        }
+
+
+
+    </script>
+}

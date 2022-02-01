@@ -26,12 +26,15 @@ namespace TicTacToe
                       "~/Content/bootstrap.css",
                       "~/Content/site.css",
                       "~/Content/toastr.css",
-                      "~/Content/animate.css"));
+                      "~/Content/DataTables/css/dataTables.bootstrap5.min.css"
+                      ));
 
 
             bundles.Add(new ScriptBundle("~/bundles/VendorsJS").Include(
                "~/Scripts/toastr.js",
-               "~/Scripts/bootbox.js"));
+               "~/Scripts/bootbox.js",
+               "~/Scripts/DataTables/jquery.dataTables.min.js",
+                "~/Scripts/DataTables/dataTables.bootstrap5.min.js"));
 
 
         }

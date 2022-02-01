@@ -1,0 +1,107 @@
+﻿@model TicTacToe.Models.Player
+
+@{
+    ViewBag.Title = "Start";
+}
+
+<h2>Start</h2>
+
+<div id="jsPlayerFormContainer">
+    @{ Html.RenderAction("GetPlayer1Form", "Game"); }
+</div>
+
+<div>
+    @Html.ActionLink("Go Back", "Index")
+</div>
+
+
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+
+        $("#player1Form").validate({
+
+            submitHandler: function () {
+
+                $.ajax({
+                    url: "/Game/AddPlayer",
+                    method: "POST",
+                    dataType: "json",
+                    data: $("#player1Form").serialize(),
+                    success: function (data) {
+
+                        if (data.resultCode == 1) {
+
+                            var player1Id = data.player1Id;
+
+                            $.get("/Game/GetPlayer2Form", function (data) {
+
+                                $('#jsPlayerFormContainer').html(data);
+
+                                $('#player2Form').append("<input type='hidden' id='player1Id' name='player1Id' value='" + player1Id + "'>");
+
+                                initValidator("player2Form");
+
+                            });
+
+                        }
+                        else if (data.resultCode == 2) {
+
+                            document.location.href = data.redirectURL;
+                        }
+                        else {
+
+                            toastr.error(data.data);
+                        }
+                    },
+                    failure: function () {
+                        console.log("fail");
+                    }
+
+                });
+
+                return false;
+            }
+        });
+
+
+        function initValidator(form) {
+
+            $("#" + form).validate({
+
+                submitHandler: function () {
+
+                    $.ajax({
+                        url: "/Game/AddPlayer",
+                        method: "POST",
+                        dataType: "json",
+                        data: $("#" + form).serialize(),
+                        success: function (data) {
+
+                            if (data.resultCode == 1) {
+
+                                document.location.href = data.data;
+
+                            }
+                            else {
+
+                                toastr.error(data.data);
+                            }
+                        },
+                        failure: function () {
+                            console.log("fail");
+                        }
+
+                    });
+
+                    return false;
+                }
+            });
+        }
+
+    </script>
+    }
+    

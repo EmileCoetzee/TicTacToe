@@ -1,0 +1,47 @@
+﻿@model TicTacToe.Models.GamePlayerViewModel
+
+@{
+    ViewBag.Title = "Game Over";
+}
+
+<h2>Game Over</h2>
+
+<div class="container">
+    <div class="row">
+
+        @{
+            bool draw = false;
+            string winner = Model.Player1.Name;
+
+            int player1Points = Model.Game.Player1Points;
+            int player2Points = Model.Game.Player2Points;
+
+            if (player2Points > player1Points)
+            {
+                winner = Model.Player2.Name;
+            }
+            else if (player1Points == player2Points)
+            {
+                draw = true;
+            }
+
+        }
+
+        @if (draw)
+        {
+            <h1>It's a Draw!</h1>
+        }
+        else
+        {
+            <h1>Winner is @winner!</h1>
+        }
+
+        <h3>Player Points</h3>
+
+        <p>@Model.Player1.Name = @Model.Game.Player1Points</p>
+        <p>@Model.Player2.Name = @Model.Game.Player2Points</p>
+
+        <a href="/Game/Start">Start New Game</a>
+
+    </div>
+</div>
