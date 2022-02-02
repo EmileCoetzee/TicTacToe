@@ -4,42 +4,63 @@
     ViewBag.Title = "Leaderboard";
 }
 
-<h2>Leaderboard</h2>
 
-@if (Model.Count() < 1)
-{
-    <p>No data found.</p>
-}
-else
-{
+<div class="container pt-5">
 
-    <table class="table">
-        <tr>
-            <th>Position</th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalPoints)
-            </th>
-        </tr>
 
-        @{
-            int count = 0;
-        }
+    <h2 class="blue text-center">Leaderboard</h2>
 
-        @foreach (var item in Model)
-        {
+    @if (Model.Count() < 1)
+    {
+        <p>No data found.</p>
+    }
+    else
+    {
+
+        <table class="table mt-5">
             <tr>
-                <td>#@(count += 1)</td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalPoints)
-                </td>
+                <th>Position</th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TotalPoints)
+                </th>
             </tr>
-        }
 
-    </table>
+            @{
+                int count = 0;
+            }
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>#@(count += 1)</td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TotalPoints)
+                    </td>
+                </tr>
+            }
+
+        </table>
+    }
+
+</div>
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+
+        $(document).ready(function () {
+
+            setActiveNavItem('nav-leaderboard');
+
+    });
+
+    </script>
 }

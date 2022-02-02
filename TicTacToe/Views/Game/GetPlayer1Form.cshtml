@@ -13,7 +13,7 @@
         <div class="form-group pt-4">
             @Html.LabelFor(model => model.Player.Name, htmlAttributes: new { @class = "control-label col-md-2" })
             
-                @Html.EditorFor(model => model.Player.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.Player.Name, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Player Name" } })
                 @Html.ValidationMessageFor(model => model.Player.Name, "", new { @class = "text-danger" })
            
         </div>

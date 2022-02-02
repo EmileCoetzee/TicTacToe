@@ -132,6 +132,12 @@
     font-weight:400;
 }
 
+/* tables */
+th
+{
+    color:#F05F90;
+}
+
 @media (max-width:767px)
 {
     .right-side

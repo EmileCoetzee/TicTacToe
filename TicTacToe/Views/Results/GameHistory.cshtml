@@ -4,68 +4,74 @@
     ViewBag.Title = "Game History";
 }
 
-<h2>Game History</h2>
 
-@if (Model.Count() < 1)
-{
-    <p>No data found.</p>
-}
-else
-{
+<div class="container pt-5">
 
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>
-                    Player 1 (Points)
-                </th>
-                <th>
-                    Player 2 (Points)
-                </th>
-                <th>
-                    Winner
-                </th>
-                <th>Date</th>
-            </tr>
-        </thead>
+    <h2 class="blue text-center">Game History</h2>
 
-        <tbody>
-            @foreach (var item in Model)
-            {
+    @if (Model.Count() < 1)
+    {
+        <p>No data found.</p>
+    }
+    else
+    {
+
+
+        <table class="table mt-5">
+            <thead>
                 <tr>
-                    <td>
-                        @item.Player1.Name (@item.Game.Player1Points)
-                    </td>
-                    <td>
-                        @item.Player2.Name (@item.Game.Player2Points)
-                    </td>
-                    <td>
-                        @{
-
-                            var winner = item.Player1.Name;
-
-                            if (item.Game.Player2Points > item.Game.Player1Points)
-                            {
-                                winner = item.Player2.Name;
-                            }
-                            else if (item.Game.Player1Points == item.Game.Player2Points)
-                            {
-                                winner = "Draw";
-                            }
-
-                        }
-
-                        <span>@winner</span>
-
-                    </td>
-                    <td>@item.Game.Date</td>
+                    <th>
+                        Player 1 (Points)
+                    </th>
+                    <th>
+                        Player 2 (Points)
+                    </th>
+                    <th>
+                        Winner
+                    </th>
+                    <th>Date</th>
                 </tr>
-            }
-        </tbody>
+            </thead>
 
-    </table>
-}
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @item.Player1.Name (@item.Game.Player1Points)
+                        </td>
+                        <td>
+                            @item.Player2.Name (@item.Game.Player2Points)
+                        </td>
+                        <td>
+                            @{
+
+                                var winner = item.Player1.Name;
+
+                                if (item.Game.Player2Points > item.Game.Player1Points)
+                                {
+                                    winner = item.Player2.Name;
+                                }
+                                else if (item.Game.Player1Points == item.Game.Player2Points)
+                                {
+                                    winner = "Draw";
+                                }
+
+                            }
+
+                            <span class="blue fw-bold fst-italic">@winner</span>
+
+                        </td>
+                        <td>@item.Game.Date</td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    }
+
+</div>
 
 
 @section scripts
@@ -73,7 +79,17 @@ else
     <script>
 
         $(document).ready(function () {
-            $('.table').DataTable();
+
+            setActiveNavItem('nav-history');
+
+
+            //init datatable and order by last column
+            $('.table').DataTable({
+
+
+                "order": [[3, 'desc']]
+
+            });
         });
 
     </script>
