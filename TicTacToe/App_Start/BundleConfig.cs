@@ -22,6 +22,7 @@ namespace TicTacToe
             bundles.Add(new Bundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js"));
 
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css",
@@ -34,7 +35,9 @@ namespace TicTacToe
                "~/Scripts/toastr.js",
                "~/Scripts/bootbox.js",
                "~/Scripts/DataTables/jquery.dataTables.min.js",
-                "~/Scripts/DataTables/dataTables.bootstrap5.min.js"));
+                "~/Scripts/DataTables/dataTables.bootstrap5.min.js",
+                "~/Scripts/Scripts.js"
+                ));
 
 
         }

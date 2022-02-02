@@ -4,7 +4,6 @@
     ViewBag.Title = "Play";
 }
 
-<h2>Play</h2>
 
 <input type="hidden" id="gameId" name="gameId" value="@ViewBag.GameId" />
 
@@ -34,7 +33,7 @@
 
 }
 
-<div class="container play-container py-5">
+<div class="container play-container py-5 text-center">
 
     @{ Html.RenderAction("GetBoard", "Game", new { currentRound = 1, currentPlayerName = Model.Player1.Name }); }
 
@@ -70,6 +69,10 @@
 
         //load saved game upon page load, if any saved data is found
         $(document).ready(function () {
+
+            setActiveNavItem('nav-start');
+
+           
 
             if ($('#highestRoundCompleted')) {
 

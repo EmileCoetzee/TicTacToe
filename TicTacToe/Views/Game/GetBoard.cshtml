@@ -1,12 +1,12 @@
 ﻿@model TicTacToe.Models.BoardViewModel
 
-<h1>Round @Model.Round</h1>
+<h1 class="blue">Round @Model.Round</h1>
 
-<h2>Turn: Player <span id="playerNumber">1</span> - <span id="playerName">@Model.PlayerName</span></h2>
+<h3 class="dark-pink">Turn: Player <span id="playerNumber">1</span> - <span id="playerName">@Model.PlayerName</span></h3>
 
 <input type="hidden" id="currentRound" value="@Model.Round" />
 
-<div class="row">
+<div class="row pt-5">
 
     <div class="col-4 square border-right border-bottom" data-id="1">
         <div></div>
