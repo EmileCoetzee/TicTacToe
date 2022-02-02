@@ -4,9 +4,12 @@
     ViewBag.Title = "Game Over";
 }
 
-<h2>Game Over</h2>
 
-<div class="container">
+
+<div class="container text-center pt-5">
+
+    <h2 class="blue">Game Over</h2>
+
     <div class="row">
 
         @{
@@ -29,19 +32,39 @@
 
         @if (draw)
         {
-            <h1>It's a Draw!</h1>
+            <h1 class="dark-pink mb-5">It's a Draw!</h1>
         }
         else
         {
-            <h1>Winner is @winner!</h1>
+            <h1 class="dark-pink mb-5">Winner is <span class="fw-bold fst-italic">@winner!</span></h1>
         }
 
+        <hr />
+
         <h3>Player Points</h3>
+
 
         <p>@Model.Player1.Name = @Model.Game.Player1Points</p>
         <p>@Model.Player2.Name = @Model.Game.Player2Points</p>
 
-        <a href="/Game/Start">Start New Game</a>
+        <div class="form-group">
+            <a class="btn" href="/Game/Start">Start New Game</a>
+        </div>
 
     </div>
 </div>
+
+
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+
+            setActiveNavItem('nav-start');
+
+        });
+    </script>
+    
+
+}

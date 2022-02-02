@@ -111,6 +111,8 @@
 {
     position:relative;
     height:calc(100vh - 78px);
+    min-height:600px;
+    
 }
 
 .right-side img
@@ -120,7 +122,14 @@
     top:50%;
     transform:translate(-50%, -50%);
     width:100%;
-    max-width:500px;
+    max-width:400px;
+}
+
+/* fonts */
+.font-lg
+{
+    font-size:1.5rem;
+    font-weight:400;
 }
 
 @media (max-width:767px)
