@@ -494,7 +494,7 @@ namespace TicTacToe.DataAccess
         {
 
             string sql = @"SELECT * 
-                FROM Players 
+                FROM Players WHERE TotalPoints > 0
                 ORDER BY TotalPoints DESC";
 
             using (IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["Staging"].ConnectionString))
